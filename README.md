@@ -1,1 +1,1 @@
-# Mildels
+Essa é a tabela mcast cluster onde no region temos na primeira linha sp_rj_mg_es e o json para essas região ao lado na 2 coluna na 2 linha da primeira coluna temos pc_sc_rs na 3 linha al_ba_ce_pb_pe_pi_rn_se na 4 linha mt_ms_go_df na 5 linha o am apenas é na 6 linha pa_to_ma_ap cada Json body na 2 coluna vai conrreponder a uf , então cada json_body do cluster vai ser apresentado col base na uf dele entendeu ? Então pq os dados não estão sendo apresentados no detalhes cidade pq nele não apresentados nada o campo do cluster está vazio 
