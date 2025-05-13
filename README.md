@@ -1,15 +1,11 @@
-import json
+
+    import json
 from .models import TbMcastCluster, TbMcastDemarcation, TbMcastNacional
 
 def get_city_data(cidade, uf):
     print(f"Processando cidade: {cidade}, UF: {uf}")
 
-    # tb_mcast_demarcation
-    demarcation_data = TbMcastDemarcation.objects.filter(cidade=cidade, uf=uf).first()
-    if not demarcation_data:
-        return None
-
-    # tb_mcast_cluster
+    # Obtendo dados do Cluster
     todas_as_regioes = TbMcastCluster.objects.all()
     cluster_data = None
     for regiao in todas_as_regioes:
@@ -22,23 +18,17 @@ def get_city_data(cidade, uf):
 
     cluster_json = json.loads(cluster_data.json_body) if cluster_data else {}
 
-    # **Filtrando o JSON para remover UFs**
-    cluster_json_filtrado = {chave: valor for chave, valor in cluster_json.items() if not "_" in chave}
+    # **Filtrando o JSON para remover chaves com UFs**
+    cluster_json_sem_ufs = {chave: valor for chave, valor in cluster_json.items() if not "_" in chave}
 
-    # tb_mcast_nacional
-    tipo_nacional = "dsp" if uf == "SP" else "fsp"
-    nacional_data = TbMcastNacional.objects.filter(dsp_fsp=tipo_nacional).first()
-    nacional_json = json.loads(nacional_data.json_body) if nacional_data else {}
+    # Debug para conferir antes e depois
+    print(f"JSON antes da filtragem: {cluster_json}")
+    print(f"JSON depois da filtragem: {cluster_json_sem_ufs}")
 
-    # Construindo city_data mantendo a estrutura original
-    city_data = {
+    # Retornando JSON filtrado
+    return {
         "city": cidade,
-        "cluster": cluster_json_filtrado,  # Agora sem UFs dentro do JSON do Cluster
-        "demarcation": json.loads(demarcation_data.json_body),
-        "federative Unit": demarcation_data.uf,
-        "nacional": nacional_json,
-        "nlc": demarcation_data.sigla
+        "cluster": cluster_json_sem_ufs,
+        "demarcation": json.loads(TbMcastDemarcation.objects.filter(cidade=cidade, uf=uf).first().json_body),
+        "federative Unit": uf,
     }
-
-    print(f"JSON final filtrado: {city_data}")
-    return city_data 
